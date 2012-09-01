@@ -1,0 +1,90 @@
+<h1><%= @feed.first_name %> <%= @feed.last_name %></h1>
+
+<p>Your offer was <b>not</b> accepted. <b>Please make a higher offer now.</b></p>
+
+<div class="page-columns">
+    <div class="column half">
+
+        <div class="rounded">
+            <div class="info mh240px">
+
+                <h3><%=current_user.feed_info.user.profile.name%> Did Not Accept Your Offer, But is Making a Counter-Offer</h3>
+
+                <p class="param">
+                    <label><%=current_user.feed_info.user.profile.name%> did not accept your offer of:</label>
+                    <span><%= number_to_currency(@offer.amount, :precision => ((@offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <div style="height: 50px;"></div>
+                <p class="param">
+                    <label>But <%=current_user.feed_info.user.profile.name%> is making a counter-offer of:</label>
+                    <span><%= number_to_currency(@counter_offer.amount, :precision => ((@counter_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <!--
+                <p class="param">
+                    <label>Or <%= @feed.payment_term %> monthly payments of:</label>
+                    <span><%= number_to_currency((@counter_offer.amount/@feed.payment_term), :precision => (((@counter_offer.amount/@feed.payment_term).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                -->
+            </div><!-- .info -->
+            <div style="height: 33px;"></div>
+            <div class="info mh50px">
+              You may choose to <b>accept</b> <%=current_user.feed_info.user.profile.name%>'s new offer now,
+              settling your <%= number_to_currency(@feed.balance, :precision => ((@feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %> debt for <%= number_to_currency(@counter_offer.amount, :precision => ((@feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %> - a <%= number_to_currency((@feed.balance-@counter_offer.amount), :precision => (((@feed.balance-@counter_offer.amount).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %> savings.
+              Or you may make a lower offer now, and see if <%=current_user.feed_info.user.profile.name%> will accept it. Keep in mind, you have only a limited number of offers to make until this session will end.
+            </div><!-- .controls -->
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+    <div class="column half">
+
+        <div class="rounded blue">
+            <% form_tag negotiate_path, :id => "negotiate_form" do %>
+            <%= hidden_field_tag :submit_button, "offer" %>
+            <div class="info mh300px">
+              <div>
+                <h3><%= @feed.first_name %> <%= @feed.last_name %> Accepts <%=current_user.feed_info.user.profile.name%>'s Offer</h3>
+                <p class="param">
+                    <label><%=current_user.feed_info.user.profile.name%> is making a counter offer of:</label>
+                    <span><b><%= number_to_currency(@counter_offer.amount, :precision => ((@counter_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></b></span>
+                    <label style="display: none">Or <%= @feed.payment_term %> monthly payments of:</label>
+                    <span style="display: none"><b><%= number_to_currency((@counter_offer.amount/@feed.payment_term), :precision => (((@counter_offer.amount/@feed.payment_term).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></b></span>
+                </p>
+              </div><!-- .info -->
+              <div class="controls">
+                  <span class="button green on-blue"><%= link_to("Accept", "javascript:void();", :onclick => "var f = document.forms['negotiate_form'];$('submit_button').value='accept';f.submit();return false;") %></span>
+              </div><!-- .controls -->
+
+              <div>
+                <h3><%= @feed.first_name %> <%= @feed.last_name %> Wants to Make a Lower Offer</h3>
+                <p class="param">
+                    <label>My New Offer:</label>
+                    <span><%= text_field_tag :offer, "", :onChange => "changeoffer(this.value);", :onKeyPress => "return keyAllowed(event, '0123456789');", :onKeyUp => "isNumber(this);" %></span>
+                </p>
+                <p class="param" style="display: none">
+                    <label><%= @feed.payment_term %> monthly payments of.</label>
+                    <span><%= text_field_tag :monthly_offer, "", :disabled => true, :class => "disabled" %></span>
+                </p>
+              </div><!-- .info -->
+            </div><!-- .info -->
+            <div class="controls">
+                <span class="button green on-blue"><%= submit_tag("Submit My Offer", :onclick => "$('submit_button').value='offer'") %></span>
+            </div><!-- .controls -->
+            <% end %>
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+</div><!-- .columns -->
+<% javascript_tag do %>
+  function changeoffer(value)
+  {
+    val = value.replace(/[^0-9]+/g,'');
+    new_val=(parseFloat(val)/<%=@feed.payment_term%>)*100;
+    new_val=parseInt(new_val)/100;
+    if(isNaN(new_val))
+      $('monthly_offer').value='';
+    else
+      $('monthly_offer').value=new_val;
+  }
+<% end %>

@@ -1,0 +1,100 @@
+<h1>Pay Now</h1>
+<h2>If you would prefer to make the payment by phone, please call 1-800-557-2117.</h2>
+<p>&nbsp;</p>
+<%#= error_messages_for :payment %>
+<% form_for :payment, @payment, :url => payment_path do |f| %>
+  <%= f.hidden_field :payment_type, :value => @pt %>
+  <%= f.hidden_field :amount, :value => @offer.amount %>
+  <p class="ctrl">
+      <b><%= (@pt == "monthly") ? "#{@offer.feed.payment_term} equal installment of" : "Single installment of" %></b>
+      <%= label_tag(:price, number_to_currency(@amount, :precision => (@amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %>
+  </p>
+  <p class="ctrl">
+      <%= f.radio_button :acc_type, "cc", :checked => true, :onclick => "$('bank_info').hide();$('cc_info').show();" %> Credit or Debit Card
+      <%= f.radio_button :acc_type, "bank", :onclick => "$('cc_info').hide();$('bank_info').show();"  %> Bank Account
+  </p>
+  <div id="bank_info">
+    <p class="ctrl">
+        <label>Account Holder’s Name</label>
+        <%= f.text_field :account_holders_name, :class => "w160px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')" %>
+    </p>
+    <p class="ctrl">
+        <label>Routing Number</label>
+        <%= f.text_field :routing_no, :maxLength => 9, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Bank Account Number</label>
+        <%= f.text_field :bank_ac_no, :maxLength => 16, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Bank Name</label>
+        <%= f.text_field :bank_name, :maxLength => 16, :class => "w160px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')"  %>
+    </p>
+  </div>
+  <div id="cc_info">
+    <p class="ctrl">
+        <label>Name as it appears on Card</label>
+        <%= f.text_field :name, :class => "w160px", :onKeyPress => "return keyAllowed(event,'#{("a".."z").to_a * ""}#{("A".."Z").to_a * ""} ')" %>
+    </p>
+    <p class="ctrl">
+        <label>Card Number</label>
+        <%= f.text_field :cc_no, :maxLength => 16, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Card Type</label>
+        <%= f.select :cc_type,Payment::CARD_TYPE, :maxLength => 16, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Card Expiration</label>
+        <%= f.select :cc_expiry_m1, ((Date.today.month)...13).collect{|i| [i,i]}, {:selected => @month}, :id => "cc_expiry_m1" %>
+        <%= f.select :cc_expiry_m2, (1...13).collect{|i| [i,i]}, {:selected => @month}, :id => "cc_expiry_m2" %>
+        <%= f.select :cc_expiry_y, ((Date.today.year)...(Date.today.year+7)).collect{|i| [i,i]}, {}, :onchange => "if(this.value==#{Date.today.year}){$('cc_expiry_m1').show();$('cc_expiry_m2').hide();}else{$('cc_expiry_m2').show();$('cc_expiry_m1').hide();}" %>
+        <%#= select_year(Date.today, :start_year => Date.today.year, :end_year => Date.today.year + 20, :field_name => 'birth', :class => "w170px") %>
+    </p>
+    <p class="ctrl">
+        <label>Card Security Code</label>
+        <%= f.text_field :security_code, :maxLength => 3, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Billing Address</label>
+        <%= f.text_field :billing_address, :class => "w160px" %>
+    </p>
+    <p class="ctrl">
+        <label>City</label>
+        <%= f.text_field :city, :class => "w160px" %>
+    </p>
+    <p class="ctrl">
+        <label>State</label>
+        <%= f.text_field :state, :class => "w160px" %>
+    </p>
+    <p class="ctrl">
+        <label>Zip</label>
+        <%= f.text_field :zip, :maxLength => 5, :class => "w160px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+    </p>
+    <p class="ctrl">
+        <label>Email</label>
+        <%= f.text_field :email, :class => "w160px" %>
+    </p>
+  </div>
+  <p class="ctrl actions">
+      <span class="button green"><%= f.submit("Pay!") %></span>
+  </p>
+<% end %>
+
+<% javascript_tag do %>
+    <% if @payment %>
+      <% if @payment.cc_expiry_y == Date.today.year %>
+          $('cc_expiry_m2').hide();
+      <% else %>
+          $('cc_expiry_m1').hide();
+      <% end %>
+      <% if @payment.acc_type.strip.downcase == "bank" %>
+          $('cc_info').hide();
+      <% else %>
+          $('bank_info').hide();
+      <% end %>
+    <% else %>
+        $('cc_expiry_m2').hide();
+        $('bank_info').hide();
+    <% end %>
+<% end %>

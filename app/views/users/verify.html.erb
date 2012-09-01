@@ -1,0 +1,27 @@
+<h1>Welcome, <%= @feed.first_name %> <%= @feed.last_name %></h1>
+<p>
+You now have the opportunity to settle your account for less than the amount you owe.<br /><br />
+
+Settling can save you a substantial amount of money and get this debt behind you before matters get worse.<br /><br />
+
+Remember, you will be negotiating directly with SKO Brenner American (SKO), so there is no 3rd party fee to pay.<br /><br />
+
+Please enter your full phone number, including area code, and your email address so we can contact you if this session is interrupted for any reason.<br /><br />
+
+If you have questions please call 1-800-557-2117.
+</p>
+<div class="divider"></div>
+<% form_for :feed, :url => verify_path, :html => {:multipart => true, :id => "feed_form"} do |f| %>
+  <p class="ctrl">
+      <%= label_tag(:phone1, "Phone Number") %>
+      <%= f.text_field :phone1, :maxLength => 14, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:phone1, "Email") %>
+      <%= f.text_field :email,  :class => "w180px"%>
+  </p>
+  <p class="ctrl actions">
+    <span class="button green" id="go_button"><%= submit_tag 'CONTINUE', :id => "go" %></span>
+    <%#= link_to "Skip", "javascript:void();", :class => "alter", :onclick => "var f = document.forms['feed_form'];f.submit();return false;" %>
+  </p>
+<% end %>

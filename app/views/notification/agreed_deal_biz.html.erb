@@ -1,0 +1,15 @@
+<p>One of your debtors has just successfully negotiated a settlement via SettleDirect.  The details of this settlement are as follows:</p>
+<p></p>
+<p>
+  For Acme account number ending in: <%= @payment.offer.feed.last_four_account_number %><br />
+  Original amount due: <%= number_to_currency(@payment.offer.feed.balance, :precision => 2) %><br />
+  Settlement amount: <%= number_to_currency(@payment.amount, :precision => 2) %><br />
+  Option to repay as six (6) monthly payments of: <%= number_to_currency(@payment.amount.to_f/6, :precision => 2) %><br />
+  By completing this settlement you will save: <%= number_to_currency((@payment.offer.feed.balance - @payment.amount), :precision => 2) %><br />
+  1st payment must be made by: <%= @payment.payment_date.strftime("%B %d, %Y") %>
+</p>
+<p></p>
+<p>
+  Click here to see a copy of the settlement confirmation email sent to the debtor.<br />
+  Please do not reply to this message as it will not reach an attended mailbox.  To continue tracking the progress of this account and your campaign, log-into your control panel at http://dealkat.com/biz<br />
+</p>

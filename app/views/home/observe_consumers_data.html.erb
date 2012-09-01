@@ -1,0 +1,54 @@
+<% if @feeds.size > 0 %>
+    <% form_tag view_data_path, :id => "feed_form" do %>
+      <%= hidden_field_tag(:page, @page) %>
+      <%= hidden_field_tag(:sort, -1)%>
+      <%= hidden_field_tag(:sort_type, 1)%>
+    <% end %>
+
+<% if @post_pages.to_i != 0 %>
+    <% if @page.to_i != @post_pages %>
+        <% if(@page.to_i <= 1)%>
+            <%= link_to("Next #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=2;f.submit();return false;") %>
+        <% else %>
+            <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i-1};f.submit();return false;") %>
+            <%= link_to("Next #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i+1};f.submit();return false;") %>
+        <% end %>
+    <% elsif @page.to_i > 1 %>
+        <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i-1};f.submit();return false;") %>
+    <% end -%>
+<%end%>
+     <table border="1" class="t_border" width="100%" id="">
+        <tr>
+          <th><%=link_to("Client Number", "javascript:void();", :onclick => "var f = document.forms['feed_form'];$('sort_type').value=#{(@sort_type-1).abs};$('sort').value=1;f.submit();return false;")%></th>
+          <th><%=link_to("Balance", "javascript:void();", :onclick => "var f = document.forms['feed_form'];$('sort_type').value=#{(@sort_type-1).abs};$('sort').value=2;f.submit();return false;")%></th>
+          <th><%=link_to("Floor Limit", "javascript:void();" , :onclick => "var f = document.forms['feed_form'];$('sort_type').value=#{(@sort_type-1).abs};$('sort').value=3;f.submit();return false;")%></th>
+          <th><%=link_to("Payment Term", "javascript:void();" , :onclick => "var f = document.forms['feed_form'];$('sort_type').value=#{(@sort_type-1).abs};$('sort').value=4;f.submit();return false;")%></th>
+          <th><%=link_to("Last Payment Date", "javascript:void();" ,:onclick => "var f = document.forms['feed_form'];$('sort_type').value=#{(@sort_type-1).abs};$('sort').value=5;f.submit();return false;")%></th>
+          <th>Action</th>
+        </tr>
+        <% @feeds.each_with_index do |feed, i|%>
+          <tr id="feed_<%=feed.id%>">
+              <td><%= feed.client_number %></td>
+              <td><%= number_to_currency(feed.balance, :unit =>"&#36;", :precision => ((feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 1)) %></td>
+              <td><%= number_to_currency(feed.floor_limit, :unit =>"&#36;", :precision => ((feed.floor_limit.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 1)) %></td>
+              <td><%= feed.payment_term %></td>
+              <td><%= feed.last_payment_date.in_time_zone("Pacific Time (US & Canada)").strftime("%Y-%m-%d %H:%M:%S %Z") %></td>
+              <td><%= link_to_remote("Delete", :url => {:controller => :users, :action => :destroy_feed, :id => feed.id}, :confirm => "Are you sure?") %></td>
+          </tr>
+        <% end %>
+      </table>
+<% if @post_pages.to_i != 0 %>
+ <% if @page.to_i != @post_pages %>
+          <% if(@page.to_i <= 1)%>
+              <%= link_to("Next #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=2;f.submit();return false;") %>
+          <% else %>
+              <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i-1};f.submit();return false;") %>
+              <%= link_to("Next #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i+1};f.submit();return false;") %>
+          <% end %>
+      <% elsif @page.to_i > 1 %>
+          <%= link_to("Prev #{@per_page}", "javascript:void();", :class => "button next", :onclick => "var f = document.forms['feed_form'];$('page').value=#{@page.to_i-1};f.submit();return false;") %>
+      <% end -%>
+<%end%>
+<% else %>
+    <b>No Data Found</b>
+<% end %>

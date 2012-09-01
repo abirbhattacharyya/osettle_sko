@@ -1,0 +1,87 @@
+<h1><%= @feed.first_name %> <%= @feed.last_name %></h1>
+
+<p>Your offer was <b>not</b> accepted.</p>
+
+<div class="page-columns">
+    <div class="column half">
+
+        <div class="rounded">
+            <div class="info mh240px">
+
+                <h3><%=current_user.feed_info.user.profile.name%> Did Not Accept Your Offer</h3>
+
+                <p class="param">
+                    <label><%=current_user.feed_info.user.profile.name%> did not accept your offer of:</label>
+                    <span><%= number_to_currency(@offer.amount, :precision => ((@offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <p class="param">
+                    <label>Your balance due:</label>
+                    <span><%= number_to_currency(@feed.balance, :precision => ((@feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <div style="height: 100px;"></div>
+                <p class="param">
+                    <label>This is the <b>final</b> opportunity to settle during this negotiation session.</label>
+                </p>
+                <div style="height: 28px;"></div>
+                <p class="param">
+                    <label><b>Final Offer:</b></label>
+                    <span><%= number_to_currency(@counter_offer.amount, :precision => ((@counter_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <p class="param">
+                    <label>Saving:</label>
+                    <span><%= number_to_currency((@feed.balance-@counter_offer.amount), :precision => (((@feed.balance-@counter_offer.amount).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+            </div><!-- .info -->
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+    <div class="column half">
+
+        <div class="rounded blue">
+            <% form_tag negotiate_path, :id => "negotiate_form" do %>
+            <%= hidden_field_tag :submit_button, "accept" %>
+            <div class="info mh240px">
+              <div>
+                <h3><%= @feed.first_name %> <%= @feed.last_name %> Accepts <%=current_user.feed_info.user.profile.name%>'s Final Offer</h3>
+                <p class="param">
+                    <label><%=current_user.feed_info.user.profile.name%> is making a final offer of:</label>
+                    <span><b><%= number_to_currency(@counter_offer.amount, :precision => ((@counter_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></b></span>
+                    <label style="display: none">Or <%= @feed.payment_term %> monthly payments of:</label>
+                    <span style="display: none"><b><%= number_to_currency((@counter_offer.amount/@feed.payment_term), :precision => (((@counter_offer.amount/@feed.payment_term).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></b></span>
+                </p>
+              </div><!-- .info -->
+              <div class="controls">
+                  <span class="button green on-blue"><%= link_to("Accept", "javascript:void();", :onclick => "var f = document.forms['negotiate_form'];$('submit_button').value='accept';f.submit();return false;") %></span>
+              </div><!-- .controls -->
+
+              <div>
+                <p class="param">
+                    <label>By clicking decline below you are rejecting our final offer and this session will be closed.</label>
+                </p>
+                <p class="param">
+                    <label>I will shortly receive an email explaining further options</label>
+                </p>
+              </div>
+              <div class="controls">
+                  <span class="button green on-blue"><%= link_to("Decline", "javascript:void();", :onclick => "var f = document.forms['negotiate_form'];$('submit_button').value='decline';f.submit();return false;") %></span>
+              </div><!-- .controls -->
+            </div><!-- .info -->
+            <% end %>
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+</div><!-- .columns -->
+<% javascript_tag do %>
+  function changeoffer(value)
+  {
+    val = value.replace(/[^0-9]+/g,'');
+    new_val=(parseFloat(val)/<%=@feed.payment_term%>)*100;
+    new_val=parseInt(new_val)/100;
+    if(isNaN(new_val))
+      $('monthly_offer').value='';
+    else
+      $('monthly_offer').value=new_val;
+  }
+<% end %>

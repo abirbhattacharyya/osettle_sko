@@ -1,0 +1,72 @@
+<h1>Congratulations, <%= @feed.first_name %> <%= @feed.last_name %>!</h1>
+<p>You have reached a settlement that saves you <%= number_to_currency((@feed.balance-@accepted_offer.amount), :precision => (((@feed.balance-@accepted_offer.amount).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %>. Please make payment arrangements now.</p>
+
+<div class="page-columns">
+    <div class="column half">
+
+        <div class="rounded">
+            <div class="info mh300px">
+
+                <h3><%=current_user.feed_info.user.profile.name%> Accepts Your Offer</h3>
+
+                <p class="param">
+                    <label><%=current_user.feed_info.user.profile.name%> will accept this settlement for your account ending in:</label>
+                    <span><%= @feed.account_number %></span>
+                </p>
+                <p class="param">
+                    <label>Original amount due:</label>
+                    <span><%= number_to_currency(@feed.balance, :precision => ((@feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <p class="param">
+                    <label>Settlement amount:</label>
+                    <span><%= number_to_currency(@accepted_offer.amount, :precision => ((@accepted_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <!--
+                <p class="param">
+                    <label>Option to repay as <%= @feed.payment_term %> monthly payments of:</label>
+                    <span><%= number_to_currency((@accepted_offer.amount/@feed.payment_term), :precision => (((@accepted_offer.amount/@feed.payment_term).to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                -->
+            </div><!-- .info -->
+            <div style="height: 5px"></div>
+            <div class="info mh50px">
+              Once payment is complete, your account will be considered as "settled in full".
+            </div><!-- .controls -->
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+    <div class="column half">
+
+        <div class="rounded blue">
+            <% form_tag schedule_path(@accepted_offer) do %>
+            <div class="info mh365px">
+              <div>
+                <h3><%= @feed.first_name %> <%= @feed.last_name %> Will Pay the Settlement as Follows</h3>
+                <p class="param">
+                    <label>
+                      Click 'Pay Now' below to make payment from checking or debit/credit card account now.
+                      <br /><br />
+                      You can schedule your payment plan today or any day within the next 30 days. Please note that this offer expires <%= (Date.today + 30.days).strftime("%m/%d/%Y") %>.
+                    </label>
+                </p>
+              </div><!-- .info -->
+              <div class="controls">
+                  <span class="button green on-blue"><%= submit_tag("Pay Now") %></span>
+              </div><!-- .controls -->
+
+              <!--<div>
+                <p class="param">
+                    <label>Click 'Agent' below to have a <%=current_user.feed_info.user.profile.name%> representative call to make payment arrangements by phone.</label>
+                </p>
+              </div><!-- .info -->
+              <!--<div class="controls">
+                  <span class="button green on-blue"><%= submit_tag("Agent") %></span>
+              </div><!-- .controls -->
+            </div>
+            <% end %>
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+</div><!-- .columns -->

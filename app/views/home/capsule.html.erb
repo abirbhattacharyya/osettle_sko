@@ -1,0 +1,74 @@
+<h1><%= @feed.first_name %> <%= @feed.last_name %>: Make your settlement offer now.</h1>
+
+<p>For a limited time you can settle your debt for less
+than you owe. Review the details of your account
+below. Then make your offer in the shaded blue
+box.
+</p>
+
+<div class="page-columns">
+    <div class="column half">
+
+        <div class="rounded">
+            <div class="info mh240px">
+
+                <h3><%=current_user.feed_info.user.profile.name%> Invites <%= @feed.first_name %> <%= @feed.last_name %> to Settle</h3>
+
+                <p class="param">
+                    <label>Balance Due:</label>
+                    <span><%= number_to_currency(@feed.balance, :precision => ((@feed.balance.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <p class="param">
+                    <label>Account:</label>
+                    <span><%= @feed.account_number %></span>
+                </p>
+            </div><!-- .info -->
+            <div class="controls mh50px">
+                &nbsp;
+            </div><!-- .controls -->
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+    <div class="column half">
+
+        <div class="rounded blue">
+            <% form_tag negotiate_path do %>
+            <div class="info mh240px">
+                <h3><%= @feed.first_name %> <%= @feed.last_name %> Makes an Offer to <%=current_user.feed_info.user.profile.name%></h3>
+
+                <p class="param">
+                    <label>My Offer:</label>
+                    <span><%= text_field_tag :offer, "", :maxLength => 7, :onBlur=> "changeoffer(this.value);", :onKeyPress => "return keyAllowed(event, '0123456789');", :onKeyUp => "isNumber(this);" %></span>
+                </p>
+                <p class="param" style="display: none">
+                    <label class="wide">If <%=current_user.feed_info.user.profile.name%> accepts this offer, you can pay in <%= @feed.payment_term %> monthly payments of:</label>
+                    <!--span class="w40h175px disabled"><label id="monthly_offer_label" class="w40h175px"></label></span><br /><br /><br /-->
+                    <span><%= text_field_tag :monthly_offer, "", :disabled => true, :class => "disabled" %></span>
+                </p>
+            </div><!-- .info -->
+            <div class="controls mh50px">
+                <span class="button green on-blue"><%= submit_tag("Submit My Offer") %></span>
+            </div><!-- .controls -->
+            <% end %>
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+</div><!-- .columns -->
+<% javascript_tag do %>
+  function changeoffer(value)
+  {
+    val = value.replace(/[^0-9]+/g,'');
+    new_val=(parseFloat(val)/<%=@feed.payment_term%>)*100;
+    new_val=parseInt(new_val)/100;
+    if(isNaN(new_val))
+    {
+      $('monthly_offer').value='';
+    }
+    else
+    {
+      $('monthly_offer').value=new_val;
+    }
+  }
+<% end %>

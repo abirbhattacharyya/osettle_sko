@@ -1,0 +1,41 @@
+<h1>Upload a CSV</h1>
+<p>Make sure your CSV file contains the columns listed below. Click on the sample file to see an example.</p>
+<p>
+  account number,
+  client number,
+  client's account number,
+  balance,
+  last pay date/time,
+  last pay amount,
+  first name,
+  middle name,
+  last name,
+  address 1,
+  address 2,
+  city,
+  state,
+  zip code,
+  phone number 1,
+  phone number 2,
+  phone number 3,
+  phone number 4,
+  maximum settlement pct,
+  term,
+  client name line 1,
+  client name line 2
+</p>
+
+<% form_tag feeds_path, :multipart => true do %>
+  <p class="ctrl">
+      <%= file_field_tag 'uploaded_file', {:style => "vertical-align: bottom;", :size => 20} %>
+      <%= link_to("Sample file", "/sample.csv") %>
+  </p>
+  <% if @feeds and @feeds.size > 0 %>
+    <p><%=radio_button_tag "csv_file", "add", true%>Add to previous data</p>
+    <p><%=radio_button_tag "csv_file", "update"%>Update previous data</p>
+  <% end %>
+  <p class="ctrl actions">
+      <span class="button green"><%= submit_tag "Go!" %></span>
+      <%= link_to("Cancel", root_path, :class => "alter") if @feeds and @feeds.size > 0 %>
+  </p>
+<% end %>

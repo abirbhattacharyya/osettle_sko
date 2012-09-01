@@ -1,0 +1,15 @@
+<h1>Welcome</h1>
+<p>
+Thank you for coming to SKO Brenner American’s online settlement system, enabling you to save money by negotiating debt settlement directly with us. Before continuing, please click on “View Terms” below to read the full terms of this offer, then enter your consent to continue if you wish to negotiate settlement of your debt.
+</p>
+<p><%= link_to("View Terms", terms_path, :onclick => "PopupCenter(this.href, 'Osettle Terms', 650, 530); return false;") %></p>
+<% form_tag agree_path do %>
+  <p class="sph-top">
+    <%= radio_button_tag :agree, '1', true, :onchange => "$('go').disabled=false;$('go_button').className='button green';" %> I agree
+    <br />
+    <%= radio_button_tag :agree, '0', false, :onchange => "$('go').disabled=true;$('go_button').className='button green disabled'" %> I do not agree
+  </p>
+  <p class="ctrl actions">
+    <span class="button green" id="go_button"><%= submit_tag 'CONTINUE', :id => "go" %></span>
+  </p>
+<% end %>

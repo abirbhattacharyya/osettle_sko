@@ -1,0 +1,66 @@
+<%= render :partial => "/partials/my_dashboard" %>
+<h1>Site Activity Report</h1>
+
+<%= calendar_date_select_includes "default" %>
+
+<div class="w650px">
+  <% form_for :reports, :url => reports_path, :html=>{:onsubmit=>"return compare_date($('from').value,$('to').value );"} do |f| %>
+    <p class="ctrl">
+        From <%= calendar_date_select_tag "from", @from, :class => "w180px", :embedded => false, :year_range => (Date.today.year - 18)..(Date.today.year), :valid_date_check => "date <= (new Date()).stripTime()"%>
+        &nbsp;&nbsp; To <%= calendar_date_select_tag "to", @to, :class => "w180px", :embedded => false, :year_range => (Date.today.year - 18)..(Date.today.year), :valid_date_check => "date <= (new Date()).stripTime()"%>
+        &nbsp;<span class="button green" ><%= f.submit("Go!") %></span>
+    </p>
+
+  <%end%>
+</div>
+<div class="w650px">
+  <table border="1" class="t_border" width="650px">
+    <tr>
+      <th>Activity</th>
+      <th>Counts</th>
+    </tr>
+    <%for report in @report%>
+      <tr>
+          <td><%= report[0] %></td>
+          <td><%= "#{"$" if (report[0].include? "$")}#{number_with_delimiter(report[1])}" %></td>
+      </tr>
+     <%end%>
+  </table>
+</div>
+
+<script type="text/javascript">
+  function compare_date(from,to)
+  {
+
+      if (from=="" && to=="")
+       {
+            alert ("From Date and To Date cannot be blank.");
+            return false;
+       }
+      else if(from=="")
+       {
+            alert ("From Date cannot be blank.");
+            return false;
+       }
+      else if (to=="")
+      {
+            alert ("To Date cannot be blank.");
+            return false;
+      }
+
+      var days = 0;
+      var difference = 0;
+      var from1 = new Date(from);
+      var to1 = new Date(to);
+      difference =  to1-from1;
+      days = Math.round(difference/(1000*60*60*24));
+
+      if (days < 0)
+      {
+            alert("To Date cannot  be greater than From Date");
+            return false;
+      }
+      else
+        return true;
+  }
+</script>

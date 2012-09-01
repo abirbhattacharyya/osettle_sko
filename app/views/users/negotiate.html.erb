@@ -1,0 +1,5 @@
+<% if @counter_offer.last? %>
+  <%= render :partial => "partials/last_offer" %>
+<% else %>
+  <%= render :partial => "partials/first_offer" %>
+<% end %>

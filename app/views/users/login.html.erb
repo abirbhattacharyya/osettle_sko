@@ -1,0 +1,14 @@
+<h1>Customer Log In</h1>
+<h2>Want to settle your debt? Enter the account number you received in the mail</h2>
+
+<%#= error_messages_for(:user, :message => "", :header_message => "")%>
+<% form_for :user, :class => "sign-in", :url => login_path do |f| %>
+  <p class="ctrl">
+      Account Number?<br />
+      <%= f.text_field :account_number, :class => "w260px", :onKeyPress => "return keyAllowed(event,'0123456789')",:maxlength => 11 %><br />
+  </p>
+  <p class="ctrl actions">
+      <span class="button green"  id="go_button"><%= f.submit("Log In", :id => "go") %></span>
+  </p>
+  <%= link_to("Click here if you need help finding the account number.", "/images/account_no.jpg", :onclick => "PopupCenter(this.href, 'Osettle Terms', 650, 530); return false;") %>
+<% end %>

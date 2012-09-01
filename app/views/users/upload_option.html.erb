@@ -1,0 +1,27 @@
+<h1>Select Upload Option</h1>
+
+<% form_tag upload_option_path, :multipart => true do %>
+  <p><%=radio_button_tag "via", "xml", false, :onchange => "$('for_xml').show();" %>Specify XML Feed </p>
+  <p><%=radio_button_tag "via", "csv", true, :onchange => "$('for_xml').hide();" %>Upload via CSV</p>
+
+  <div id="for_xml">
+    <p class="ctrl">
+        <%= label_tag(:feed_url, "Specify Feed URL") %>
+        <%= text_field_tag :feed_url, '', :class => "w180px" %>
+        <%= link_to("Sample file", "/sample.csv", :class =>"alter", :target => "_new") %>
+    </p>
+    <% if @feeds and @feeds.size > 0 %>
+      <p><%=radio_button_tag "csv_file", "add", true%>Add to previous data</p>
+      <p><%=radio_button_tag "csv_file", "update"%>Update previous data</p>
+    <% end %>
+  </div>
+
+  <p class="ctrl actions">
+      <span class="button green"><%= submit_tag "Go!" %></span>
+      <%= link_to("Cancel", root_path, :class => "alter") if @feeds and @feeds.size > 0 %>
+  </p>
+<% end %>
+
+<% javascript_tag do %>
+    $('for_xml').hide();
+<% end %>

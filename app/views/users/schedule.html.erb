@@ -1,0 +1,44 @@
+<%= calendar_date_select_includes "default" %>
+
+<h1>Please Schedule Your Payment</h1>
+
+<p>
+  You have the option of paying by a credit or debit card, or directly from a bank account.<br />
+  You can schedule the payment for today, or up to 30 days in the future.<br />
+  If you would prefer to make the payment by phone, please call: 1-800-557-2117.
+</p>
+
+<div class="page-columns">
+    <% form_tag schedule_path(@accepted_offer) do %>
+    <div class="column half">
+        <div class="rounded">
+            <div class="info mh270px">
+                <h3>
+                    <%= radio_button_tag :pt, "full", true %>
+                    Full Payment Amount
+                </h3>
+
+                <p class="param">
+                    <label>Single payment of:</label>
+                    <span><%= number_to_currency(@accepted_offer.amount, :precision => ((@accepted_offer.amount.to_s.reverse.match(/\b0[.](.*?)/)) ? 0 : 2)) %></span>
+                </p>
+                <p class="param">
+                    <label>Select Payment Date (mm/dd/yy):</label>
+                </p>
+                <p id="date_options">
+                    <%#= select_tag :month1, options_for_select((1..12).collect {|i| [User::MONTH_NAMES[i-1], i]}), {:onchange => "new_change_days(this.id, 'year1', 'day1','days1')"} %>
+                    <%= select_tag :month1, options_for_select(month_options.collect {|i| [User::MONTH_NAMES[i-1], i]}), {:onchange => "new_change_days(this.value)"} %>
+                    <%= select_tag :day1, options_for_select(day_options.collect {|i| [i, i]}, 1) %>
+                    <%= select_tag :year1, options_for_select((year_options).each {|i| i}, Time.now.year), {:onchange => "new_change_days('month1', this.id, 'day1','days1')"} %>
+                </p>
+
+            </div><!-- .info -->
+            <div class="controls mh50px">
+                <span class="button green"><input type="submit" name="" value="Schedule"/></span>
+            </div><!-- .controls -->
+            <div class="foot"></div>
+        </div><!-- .rounded -->
+
+    </div><!-- .column.half -->
+    <% end %>
+</div><!-- .columns -->

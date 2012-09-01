@@ -1,0 +1,50 @@
+<%= calendar_date_select_includes "default" %>
+<h1>Feeds Information</h1>
+
+<%#= error_messages_for(:profile, :order => [:name, :web_url, :address1, :address2, :city, :state, :zip, :phone, :email, :twitter_id], :message => "", :header_message => "")%>
+<% form_for :feed, :url => manual_feed_path, :html => {:multipart => true} do |f| %>
+  <p class="ctrl">
+      <%= label_tag(:first_name, "First Name") %>
+      <%= f.text_field :first_name, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:last_name, "Last Name") %>
+      <%= f.text_field :last_name, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:address1, "Address Line 1") %>
+      <%= f.text_field :address1, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:address2, "Address Line 2") %>
+      <%= f.text_field :address2, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:city, "City") %>
+      <%= f.text_field :city, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:state, "State") %>
+      <%= f.text_field :state, :class => "w180px" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:zip, "5 Digit Zip") %>
+      <%= f.text_field :zip, :maxLength => 5, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789')" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:home_phone, "Home Phone") %>
+      <%= f.text_field :home_phone, :maxLength => 14, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+  </p>
+  <p class="ctrl">
+      <%= label_tag(:mobile_phone, "Cell Phone") %>
+      <%= f.text_field :mobile_phone, :maxLength => 14, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+  </p>
+  <p class="ctrl">
+      <%=label_tag(:ssn, "Last 4 Digits of Social Security Number") %>
+      <%=f.text_field :ssn, :maxLength => 4, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+  </p>
+  <p class="ctrl actions">
+      <span class="button green"><%= f.submit("Go!") %></span>
+      <%= link_to("Cancel", "javascript:history.back();", :class => "alter") if current_user.feeds.size > 0%>
+  </p>
+<% end %>

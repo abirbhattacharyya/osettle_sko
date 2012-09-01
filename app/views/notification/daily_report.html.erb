@@ -1,0 +1,28 @@
+<%today = DateTime.now.in_time_zone("Pacific Time (US & Canada)")%>
+<h1>SKO Osetlle Report</h1>
+
+<p>Campaign Started= May 29,2011</p>
+<p>Date Made= <%= today.strftime("%B %d, %Y, %I%p")%> PST</p>
+
+<div class="w650px">
+  <table border="1" class="t_border" width="650px">
+    <tr>
+      <th>Activity</th>
+      <th>Yesterday</th>
+      <th>Cumulative To Date</th>
+    </tr>
+    <%for report in @report%>
+      <tr>
+          <td><%= report[0] %></td>
+          <%if report[0].include? 'Average Time On Site'%>
+              <td><%=report[1]%></td>
+              <td><%=report[2]%></td>
+          <%else%>
+              <td><%= "#{"$" if (report[0].include? "$")}#{number_with_delimiter(report[1])}" %></td>
+              <td><%= "#{"$" if (report[0].include? "$")}#{number_with_delimiter(report[2])}" %></td>
+          <%end%>
+          
+      </tr>
+     <%end%>
+  </table>
+</div>

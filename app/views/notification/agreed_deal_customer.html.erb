@@ -1,0 +1,23 @@
+<p>Congratulations. Thank you for taking the opportunity to visit our SettleDirect online settlement website and agreeing to a settlement for your account with us.  This is to confirm your settlement agreement as follows:</p>
+<p></p>
+<p>
+  For your <%=current_user.feed_info.user.profile.name%> account number ending in: <%= @payment.offer.feed.last_four_account_number %><br />
+  Original amount due: <%= number_to_currency(@payment.offer.feed.balance, :precision => 2) %><br />
+  Settlement amount: <%= number_to_currency(@payment.amount, :precision => 2) %><br />
+  Option to repay as six (6) monthly payments of: <%= number_to_currency(@payment.amount.to_f/6, :precision => 2) %><br />
+  By completing this settlement you will save: <%= number_to_currency((@payment.offer.feed.balance - @payment.amount), :precision => 2) %><br />
+  1st payment must be made by: <%= @payment.payment_date.strftime("%B %d, %Y") %>
+</p>
+<p></p>
+<p></p>
+<p>By assuring payment is complete, you will not only save a considerable amount of money, but settling this account will mark your defaulted account as “satisfied” and this will help reestablish your future credit scores. Important: this settlement does not become effective until you have paid the entire settlement amount within the timeframe provided.  Otherwise, the settlement agreement becomes void, and you will owe the original amount due, plus any applicable interest, fees and charges.  In this event, your account will be reported “in default” and your credit rating may be affected.</p>
+<p></p>
+<p>
+  If you have not already done so, please make payment arrangements now by calling 1-866-281-3142.<br />
+  Please feel free to call us at this same number if you have any questions about your settlement.<br />
+</p>
+<p>
+  A. Thompson<br />
+  Settlement Administrator<br />
+  <%=current_user.feed_info.user.profile.name%><br />
+</p>

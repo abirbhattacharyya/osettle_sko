@@ -1,0 +1,28 @@
+<% if((@accepted_offer and @accepted_offer.payment and @accepted_offer.payment.payment_type.downcase == "agent") or (@rejected_offer and @rejected_offer.payment and @rejected_offer.payment.payment_type.downcase == "decline")) %>
+  <h1>Make payment arrangement by phone</h1>
+  <p>
+    If it is now during business hours 8:30 am – 8:30 PM Eastern,
+    Mon-Fri - .please call 1-000-000-0000<br />
+  </p>
+  <p>
+    Otherwise we will call you the next business day.<br />
+    Please provide two phone numbers if at all possible:<br />
+  </p>
+  <% form_for :feed, :url => congratulations_path, :html => {:id => "feed_form"} do |f| %>
+    <p class="ctrl">
+        <%= label_tag(:phone1, "Phone Number") %>
+        <%= f.text_field :phone1, :maxLength => 14, :class => "w180px", :onKeyPress => "return keyAllowed(event,'0123456789.-()')" %>
+    </p>
+    <p class="ctrl actions">
+      <span class="button green" id="go_button"><%= submit_tag 'UPDATE', :id => "go" %></span>
+      <%#= link_to "Skip", "javascript:void();", :class => "alter", :onclick => "var f = document.forms['feed_form'];f.submit();return false;" %>
+    </p>
+  <% end %>
+  <p>
+    Remember, your settlement is not effective until payment is
+    complete; otherwise your original amount due will apply plus
+    any applicable interest and penalties
+  </p>
+<% else %>
+  <h2>Thank you for agreeing to settle your account.  Once your payment clears, you will receive confirmation that the settlement has become effective.</h2>
+<% end %>

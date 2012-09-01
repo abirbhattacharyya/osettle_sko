@@ -1,0 +1,7 @@
+<p>Hi,  <%= @user.email %></p>
+<% key = User.verify_user(@user.email) %>
+<p>You just created an id on Osettle.  Please go to <%= auto_link(verify_user_url(@user.id, key), :all, :target => "_new") %> to verify your email. For security reasons, you can’t continue until your verify your email.</p>
+<p>
+  Regards,<br />
+  Settledirect and Dealkat
+</p>
